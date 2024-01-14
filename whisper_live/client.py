@@ -377,7 +377,7 @@ class Client:
                     print("No in bytes!")
                     break
                 if i % 200:
-                    print("Getting bytes")
+                    print("Getting bytes", i)
                 i += 1
                 audio_array = self.bytes_to_float_array(in_bytes)
                 self.send_packet_to_server(audio_array.tobytes())
