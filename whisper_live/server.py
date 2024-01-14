@@ -283,7 +283,7 @@ class ServeClient:
             )
             return None
         
-        if model_size in ["large-v2", "large-v3"]:
+        if model_size in ["large-v2", "large-v3", "NbAiLabBeta/nb-whisper-large"]:
             self.multilingual = True
             return model_size
 
