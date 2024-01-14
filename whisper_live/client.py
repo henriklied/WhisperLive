@@ -375,7 +375,6 @@ class Client:
                 if not in_bytes:
                     print("No in bytes!")
                     break
-                print("inbytes", in_bytes)
                 audio_array = self.bytes_to_float_array(in_bytes)
                 self.send_packet_to_server(audio_array.tobytes())
 
