@@ -455,7 +455,7 @@ class ServeClient:
         if len(segments) > 1:
             for i, s in enumerate(segments[:-1]):
                 text_ = s.text
-                print(s['uuid'])
+                print(s.uuid)
                 self.text.append(text_)
                 start, end = self.timestamp_offset + s.start, self.timestamp_offset + min(duration, s.end)
                 self.transcript.append(self.format_segment(start, end, text_))
