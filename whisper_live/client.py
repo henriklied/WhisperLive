@@ -4,6 +4,8 @@ import wave
 import numpy as np
 import scipy
 import ffmpeg
+import subprocess
+import sys
 import pyaudio
 import threading
 import textwrap
@@ -360,23 +362,34 @@ class Client:
         print("[INFO]: Connecting to HLS stream...")
         process = None  # Initialize process to None
 
+        command = [
+            'ffmpeg',
+            '-i', hls_url,
+            '-threads', '0',
+            '-f', 's16le',
+            '-acodec', 'pcm_s16le',
+            '-ac', '1',
+            '-ar', str(self.rate),
+            '-'
+        ]
+
+        process = None
+
         try:
-            # Connecting to the HLS stream using ffmpeg-python
-            process = (
-                ffmpeg
-                .input(hls_url, threads=0)
-                .output('-', format='s16le', acodec='pcm_s16le', ac=1, ar=self.rate)
-                .run_async(pipe_stdout=True, pipe_stderr=True)
+            process = subprocess.Popen(
+                command,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                bufsize=10**8
             )
 
-            # Process the stream
             i = 0
             while True:
-                in_bytes = process.stdout.read(self.chunk * 4)  # 2 bytes per sample
+                in_bytes = process.stdout.read(self.chunk * 2)  # 2 bytes per sample
                 if not in_bytes:
                     print("No in bytes!")
                     break
-                if i % 200:
+                if i % 200 == 0:  # Fixed to execute when i is a multiple of 200
                     print("Getting bytes", i)
                 i += 1
                 audio_array = self.bytes_to_float_array(in_bytes)
@@ -384,10 +397,16 @@ class Client:
 
         except Exception as e:
             print(f"[ERROR]: Failed to connect to HLS stream: {e}")
+            if process:
+                process.kill()
+                process.wait()
+            sys.exit(1)
+
         finally:
             if process:
-                print("Killing process - henrik tktktk client.py")
-                process.kill()
+                process.kill()  # Ensure the process is killed
+                process.wait()  # Wait for the process to terminate to avoid zombies
+                print("Killing process - client.py")
 
         print("[INFO]: HLS stream processing finished.")
 
