@@ -187,6 +187,7 @@ class Client:
                 redis_client.publish(channel_name, json.dumps(seg))
 
     def on_error(self, ws, error):
+        print("Websocket error!")
         print(error)
 
     def on_close(self, ws, close_status_code, close_msg):
