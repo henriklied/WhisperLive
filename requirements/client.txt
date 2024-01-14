@@ -2,3 +2,4 @@ PyAudio
 ffmpeg-python
 scipy
 websocket-client
+redis
