@@ -3,6 +3,7 @@ import time
 import threading
 import json
 import textwrap
+import uuid
 
 import logging
 # logging.basicConfig(level = logging.INFO)
@@ -364,6 +365,12 @@ class ServeClient:
                     vad_parameters=self.vad_parameters
                 )
 
+                new_result = []
+                for __r in result:
+                    __r['uuid'] = str(uuid.uuid4())
+                    new_result.append(__r)
+                result = new_result
+
                 if self.language is None:
                     if info.language_probability > 0.5:
                         self.language = info.language
@@ -448,6 +455,7 @@ class ServeClient:
         if len(segments) > 1:
             for i, s in enumerate(segments[:-1]):
                 text_ = s.text
+                print(s['uuid'])
                 self.text.append(text_)
                 start, end = self.timestamp_offset + s.start, self.timestamp_offset + min(duration, s.end)
                 self.transcript.append(self.format_segment(start, end, text_))
