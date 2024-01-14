@@ -55,7 +55,7 @@ class Client:
     INSTANCES = {}
 
     def __init__(
-        self, host=None, port=None, is_multilingual=False, lang="no", translate=False, model_size="large"
+        self, host=None, port=None, is_multilingual=False, lang="no", translate=False, model_size="large",  channel=0, session="0"
     ):
         """
         Initializes a Client instance for audio recording and streaming to a server.
@@ -180,6 +180,8 @@ class Client:
         message = message["segments"]
         if len(message):
             for seg in message:
+                seg['channel'] = self.channel
+                seg['session'] = self.session
                 redis_client.publish(channel_name, json.dumps(seg))
 
     def on_error(self, ws, error):
@@ -494,8 +496,8 @@ class TranscriptionClient:
         transcription_client()
         ```
     """
-    def __init__(self, host, port, is_multilingual=False, lang=None, translate=False, model_size="small"):
-        self.client = Client(host, port, is_multilingual, lang, translate, model_size)
+    def __init__(self, host, port, is_multilingual=False, lang=None, translate=False, model_size="small", channel=0, session="0"):
+        self.client = Client(host, port, is_multilingual, lang, translate, model_size, channel=0, session="0")
 
     def __call__(self, audio=None, hls_url=None):
         """
