@@ -12,6 +12,11 @@ import websocket
 import uuid
 import time
 
+import redis
+
+redis_client = redis.Redis(host='localhost', port=6379, db=0)
+channel_name = "whisper_data"
+
 
 def resample(file: str, sr: int = 16000):
     """
@@ -50,7 +55,7 @@ class Client:
     INSTANCES = {}
 
     def __init__(
-        self, host=None, port=None, is_multilingual=False, lang=None, translate=False, model_size="small"
+        self, host=None, port=None, is_multilingual=False, lang="no", translate=False, model_size="large"
     ):
         """
         Initializes a Client instance for audio recording and streaming to a server.
@@ -173,25 +178,9 @@ class Client:
             return
 
         message = message["segments"]
-        text = []
         if len(message):
             for seg in message:
-                if text and text[-1] == seg["text"]:
-                    # already got it
-                    continue
-                text.append(seg["text"])
-        # keep only last 3
-        if len(text) > 3:
-            text = text[-3:]
-        wrapper = textwrap.TextWrapper(width=60)
-        word_list = wrapper.wrap(text="".join(text))
-        # Print each line.
-        if os.name == "nt":
-            os.system("cls")
-        else:
-            os.system("clear")
-        for element in word_list:
-            print(element)
+                redis_client.publish(channel_name, json.dumps(seg))
 
     def on_error(self, ws, error):
         print(error)
