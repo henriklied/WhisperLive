@@ -367,7 +367,7 @@ class ServeClient:
 
                 new_result = []
                 for __r in result:
-                    __r['uuid'] = str(uuid.uuid4())
+                    __r.uuid = str(uuid.uuid4())
                     new_result.append(__r)
                 result = new_result
 
