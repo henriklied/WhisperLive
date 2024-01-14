@@ -370,12 +370,15 @@ class Client:
             )
 
             # Process the stream
+            i = 0
             while True:
                 in_bytes = process.stdout.read(self.chunk * 2)  # 2 bytes per sample
                 if not in_bytes:
                     print("No in bytes!")
                     break
-                print("Getting bytes")
+                if i % 200:
+                    print("Getting bytes")
+                i += 1
                 audio_array = self.bytes_to_float_array(in_bytes)
                 self.send_packet_to_server(audio_array.tobytes())
 
