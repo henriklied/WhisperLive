@@ -499,7 +499,7 @@ class TranscriptionClient:
         ```
     """
     def __init__(self, host, port, is_multilingual=False, lang=None, translate=False, model_size="small", channel=0, session="0"):
-        self.client = Client(host, port, is_multilingual, lang, translate, model_size, channel=0, session="0")
+        self.client = Client(host, port, is_multilingual, lang, translate, model_size, channel=channel, session=session)
 
     def __call__(self, audio=None, hls_url=None, channel=1, session="0"):
         """
