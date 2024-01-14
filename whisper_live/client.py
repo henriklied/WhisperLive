@@ -372,7 +372,7 @@ class Client:
             # Process the stream
             i = 0
             while True:
-                in_bytes = process.stdout.read(self.chunk * 2)  # 2 bytes per sample
+                in_bytes = process.stdout.read(self.chunk * 4)  # 2 bytes per sample
                 if not in_bytes:
                     print("No in bytes!")
                     break
