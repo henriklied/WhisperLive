@@ -215,7 +215,7 @@ class ServeClient:
         self.data = b""
         self.frames = b""
         self.model_sizes = [
-            "tiny", "base", "small", "medium", "large-v2", "large-v3"
+            "tiny", "base", "small", "medium", "large-v2", "large-v3", "NbAiLabBeta/nb-whisper-large"
         ]
         self.multilingual = multilingual
         self.model_size = self.get_model_size(model_size)
