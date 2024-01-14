@@ -497,6 +497,7 @@ class ServeClient:
         that the transcription service is disconnecting gracefully.
 
         """
+        print("Disconnect message sent")
         self.websocket.send(
             json.dumps(
                 {

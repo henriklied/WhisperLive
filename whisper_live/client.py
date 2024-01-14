@@ -373,6 +373,7 @@ class Client:
             while True:
                 in_bytes = process.stdout.read(self.chunk * 2)  # 2 bytes per sample
                 if not in_bytes:
+                    print("No in bytes!")
                     break
                 audio_array = self.bytes_to_float_array(in_bytes)
                 self.send_packet_to_server(audio_array.tobytes())
@@ -381,6 +382,7 @@ class Client:
             print(f"[ERROR]: Failed to connect to HLS stream: {e}")
         finally:
             if process:
+                print("Killing process - henrik tktktk client.py")
                 process.kill()
 
         print("[INFO]: HLS stream processing finished.")
@@ -440,7 +442,6 @@ class Client:
             self.stream.close()
             self.p.terminate()
             self.close_websocket()
-
             self.write_output_recording(n_audio_file, out_file)
 
     def write_output_recording(self, n_audio_file, out_file):
