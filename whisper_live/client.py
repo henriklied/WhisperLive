@@ -180,11 +180,15 @@ class Client:
             return
 
         message = message["segments"]
+        text = []
         if len(message):
             for seg in message:
+                if text and text[-1] == seg["text"]:
+                    continue
                 seg['channel'] = self.channel
                 seg['session'] = self.session
                 redis_client.publish(channel_name, json.dumps(seg))
+                text.append(seg["text"])
 
     def on_error(self, ws, error):
         print("Websocket error!")
