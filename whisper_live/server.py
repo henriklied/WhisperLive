@@ -350,7 +350,7 @@ class ServeClient:
             samples_take = max(0, (self.timestamp_offset - self.frames_offset)*self.RATE)
             input_bytes = self.frames_np[int(samples_take):].copy()
             duration = input_bytes.shape[0] / self.RATE
-            if duration<1.0:
+            if duration<6.0:
                 continue
             try:
                 input_sample = input_bytes.copy()
