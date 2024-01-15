@@ -457,7 +457,8 @@ class ServeClient:
 
         self.current_out += segments[-1].text
         last_segment = self.format_segment(
-            self.timestamp_offset + segments[-1].start,
+            #self.timestamp_offset + segments[-1].start,
+            segments[-1].start,
             self.timestamp_offset + min(duration, segments[-1].end),
             self.current_out
         )
