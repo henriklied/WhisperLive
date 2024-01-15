@@ -416,8 +416,8 @@ class ServeClient:
     def format_segment(self, start, end, text):
         """Helper function to format a segment with string timestamps."""
         return {
-            'start': "{:.3f}".format(start),
-            'end': "{:.3f}".format(end),
+            'start': "{:.1f}".format(start),
+            'end': "{:.1f}".format(end),
             'text': text
         }
 
