@@ -403,23 +403,16 @@ class Client:
 
             # Wait for stderr_thread to finish (if the process has ended)
             stderr_thread.join()
-
         except Exception as e:
             print(f"[ERROR]: Failed to connect to HLS stream: {e}")
         finally:
             if process:
                 process.kill()
                 process.wait()
+                print("Killing process - client.py")
             # It is generally not a good idea to call sys.exit() in exception handling.
             # Raising an exception is more appropriate for a library function.
             raise e
-
-        finally:
-            if process:
-                process.kill()  # Ensure the process is killed
-                process.wait()  # Wait for the process to terminate to avoid zombies
-                print("Killing process - client.py")
-
         print("[INFO]: HLS stream processing finished.")
 
 
