@@ -360,7 +360,6 @@ class Client:
             hls_url (str): The URL of the HLS stream source.
         """
         print("[INFO]: Connecting to HLS stream...")
-        process = None  # Initialize process to None
 
         command = [
             'ffmpeg',
@@ -373,34 +372,47 @@ class Client:
             '-'
         ]
 
+        def stderr_reader_thread(process):
+            for line in iter(process.stderr.readline, b''):
+                print("[STDERR]:", line.decode(), end='')
+
         process = None
 
         try:
             process = subprocess.Popen(
                 command,
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                bufsize=10**8
+                stderr=subprocess.PIPE
             )
+
+            # Start the stderr reading thread
+            stderr_thread = threading.Thread(target=stderr_reader_thread, args=(process,))
+            stderr_thread.start()
 
             i = 0
             while True:
+                if i % 200 == 0:  # Fixed to execute when i is a multiple of 200
+                    print("Getting bytes", i)
                 in_bytes = process.stdout.read(self.chunk * 2)  # 2 bytes per sample
                 if not in_bytes:
                     print("No in bytes!")
                     break
-                if i % 200 == 0:  # Fixed to execute when i is a multiple of 200
-                    print("Getting bytes", i)
                 i += 1
                 audio_array = self.bytes_to_float_array(in_bytes)
                 self.send_packet_to_server(audio_array.tobytes())
 
+            # Wait for stderr_thread to finish (if the process has ended)
+            stderr_thread.join()
+
         except Exception as e:
             print(f"[ERROR]: Failed to connect to HLS stream: {e}")
+        finally:
             if process:
                 process.kill()
                 process.wait()
-            sys.exit(1)
+            # It is generally not a good idea to call sys.exit() in exception handling.
+            # Raising an exception is more appropriate for a library function.
+            raise e
 
         finally:
             if process:
