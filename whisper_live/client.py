@@ -189,6 +189,7 @@ class Client:
                     continue
                 seg['channel'] = self.channel
                 seg['session'] = self.session
+                seg['start'] = int(seg['start'])
                 redis_client.publish(channel_name, json.dumps(seg))
                 text.append(seg["text"])
 
