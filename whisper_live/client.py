@@ -394,7 +394,7 @@ class Client:
             while True:
                 if i % 200 == 0:  # Fixed to execute when i is a multiple of 200
                     print("Getting bytes", i)
-                in_bytes = process.stdout.read(self.chunk * 8)  # 2 bytes per sample
+                in_bytes = process.stdout.read(self.chunk * 2)  # 2 bytes per sample
                 if not in_bytes:
                     print("No in bytes!")
                     break
